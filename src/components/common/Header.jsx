@@ -2,7 +2,7 @@ import { LeftArrow } from "neetoicons";
 import { Typography } from "neetoui";
 import { useHistory } from "react-router-dom";
 
-const Header = ({ title, shouldShowBackButton = true }) => {
+const Header = ({ title, shouldShowBackButton = true, actionBlock }) => {
   const history = useHistory();
 
   return (
@@ -18,6 +18,7 @@ const Header = ({ title, shouldShowBackButton = true }) => {
           {title}
         </Typography>
       </div>
+      <div className="flex items-end space-x-4">{actionBlock}</div>
       <hr className="neeto-ui-bg-black h-1" />
     </div>
   );
