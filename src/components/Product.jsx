@@ -1,31 +1,39 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import productsApi from "apis/products";
+import { LeftArrow } from "neetoicons";
 import { Spinner, Typography } from "neetoui";
 import { append, isNotNil } from "ramda";
+import { useParams, useHistory } from "react-router-dom";
 
 import Carousel from "./Carousel";
+import PageNotFound from "./PageNotFound";
 
 // import { IMAGE_URLS } from "./constants";
 
 const Product = () => {
-  useEffect(() => {
-    fetchProduct();
-  }, []);
+  const [isError, setIsError] = useState(false);
+  const history = useHistory();
 
-  const [product, setProduct] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchProduct = async () => {
+  const { slug } = useParams();
+  const fetchProduct = useCallback(async () => {
     try {
-      const product = await productsApi.show();
+      const product = await productsApi.show(slug);
       setProduct(product);
     } catch (error) {
+      setIsError(true);
       console.log("An error occurred:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [slug]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
+
+  const [product, setProduct] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   if (isLoading) {
     return (
@@ -35,6 +43,10 @@ const Product = () => {
     );
   }
 
+  if (isError) {
+    return <PageNotFound />;
+  }
+
   const { name, description, mrp, offerPrice, imageUrls, imageUrl } = product;
   const totalDiscounts = mrp - offerPrice;
   const discountPercentage = ((totalDiscounts / mrp) * 100).toFixed(1);
@@ -42,9 +54,18 @@ const Product = () => {
   return (
     <div className="px-6 pb-6">
       <div>
-        <Typography className="py-2 text-4xl font-semibold" style="h1">
-          {name}
-        </Typography>
+        <div className="m-2">
+          <div className="flex items-center">
+            <LeftArrow
+              className="hover:neeto-ui-bg-gray-400 neeto-ui-rounded-full mr-6"
+              onClick={history.goBack}
+            />
+            <Typography style="h1" weight="semibold">
+              {name}
+            </Typography>
+          </div>
+          <hr className="neeto-ui-bg-black h-1" />
+        </div>
       </div>
       <div className="mt-6 flex gap-4">
         <div className="w-2/5">
