@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 
 import productsApi from "apis/products";
-import { LeftArrow } from "neetoicons";
-import { Spinner, Typography } from "neetoui";
+import { PageLoader, Header, PageNotFound } from "components/common";
+import { Typography } from "neetoui";
 import { append, isNotNil } from "ramda";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Carousel from "./Carousel";
-import PageNotFound from "./PageNotFound";
 
 // import { IMAGE_URLS } from "./constants";
 
 const Product = () => {
   const [isError, setIsError] = useState(false);
-  const history = useHistory();
 
   const { slug } = useParams();
   const fetchProduct = useCallback(async () => {
@@ -36,11 +34,7 @@ const Product = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Spinner />
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (isError) {
@@ -53,20 +47,7 @@ const Product = () => {
 
   return (
     <div className="px-6 pb-6">
-      <div>
-        <div className="m-2">
-          <div className="flex items-center">
-            <LeftArrow
-              className="hover:neeto-ui-bg-gray-400 neeto-ui-rounded-full mr-6"
-              onClick={history.goBack}
-            />
-            <Typography style="h1" weight="semibold">
-              {name}
-            </Typography>
-          </div>
-          <hr className="neeto-ui-bg-black h-1" />
-        </div>
-      </div>
+      <Header title={name} />
       <div className="mt-6 flex gap-4">
         <div className="w-2/5">
           {isNotNil(imageUrls) ? (

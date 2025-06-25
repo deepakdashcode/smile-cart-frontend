@@ -1,4 +1,4 @@
-import PageNotFound from "components/PageNotFound";
+import PageNotFound from "components/common/PageNotFound";
 import Product from "components/Product";
 import ProductList from "components/ProductList";
 import { Route, Switch } from "react-router-dom";
